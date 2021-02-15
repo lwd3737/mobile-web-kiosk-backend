@@ -1,3 +1,3 @@
-exports.kioskRouter = require('./kiosk');
-//exports.adminRouter = require('./admin');
-//exports.usersRouter = require('./users');
+exports.kioskAppRouter = require('./kioskApp');
+exports.partnerAppRouter = require('./partnerApp');
+//exports.authRouter = require('./auth');

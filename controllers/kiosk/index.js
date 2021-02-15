@@ -1,1 +1,0 @@
-exports.partner = require('./partner');
