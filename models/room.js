@@ -17,8 +17,16 @@ module.exports = (sequelize, DataTypes) => {
   Room.init({
     number: DataTypes.INTEGER,
     name: DataTypes.STRING,
+    colSeatCount: DataTypes.INTEGER,
+    rowSeatCount: DataTypes.INTEGER, 
     seatCount: DataTypes.INTEGER
   }, {
+    hooks: {
+      beforeValidate: (room) => {
+        const { colSeatCount, rowSeatCount } = room;
+        room.seatCount = colSeatCount * rowSeatCount;
+      }
+    },
     sequelize,
     modelName: 'Room',
   });

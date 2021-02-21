@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const auth = require(__base + '/controllers/partnerApp/auth');
+const authController = require(__base + '/controllers/partnerApp/auth');
+const roomController = require(__base + '/controllers/partnerApp/room');
 
-router.post('/login', auth.login);
+router.post('/login', authController.login);
+
+router.get('/rooms', roomController.getRoomList);
+router.post('/rooms', roomController.createRoom);
 
 module.exports = router;

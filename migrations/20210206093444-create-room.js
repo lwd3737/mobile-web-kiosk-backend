@@ -9,10 +9,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       number: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       partnerId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'Partners',
           key: 'id'
@@ -21,10 +23,12 @@ module.exports = {
         onDelete: 'cascade'
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       seatCount: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

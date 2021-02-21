@@ -1,22 +1,28 @@
-const { User } = require(__base + '/models');
+const { Partner, User } = require(__base + '/models');
 
 const auth = {};
 
 auth.login = async (req, res) => {
+    const { username } = req.body;
 
     //향후 카카오 로그인으로 구현
-    const user = await User.findOne({
-        where: {
-            username: 'limwondong'
+    const partner = await Partner.findOne({
+        include: {
+            model: User,
+            as: 'owner',
+            where: {
+                username
+            }
         }
     });
-    if(user === null){
+    if(partner === null){
         return res.status(404)
             .json({ errorMessage: 'user record not exist' });
     }
 
+    console.log('partner: ', partner.dataValues);
     return res.status(200)
-        .json({...user.dataValues});
+        .json({...partner.dataValues});
 }
 
 module.exports = auth;
