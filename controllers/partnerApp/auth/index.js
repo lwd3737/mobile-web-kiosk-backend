@@ -20,7 +20,6 @@ auth.login = async (req, res) => {
             .json({ errorMessage: 'user record not exist' });
     }
 
-    console.log('partner: ', partner.dataValues);
     return res.status(200)
         .json({...partner.dataValues});
 }

@@ -8,5 +8,6 @@ router.post('/login', authController.login);
 
 router.get('/rooms', roomController.getRoomList);
 router.post('/rooms', roomController.createRoom);
+router.get('/rooms/:roomId', roomController.getRoomForm);
 
 module.exports = router;
