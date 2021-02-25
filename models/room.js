@@ -25,7 +25,9 @@ module.exports = (sequelize, DataTypes) => {
       beforeValidate: (room) => {
         const { colSeatCount, rowSeatCount } = room;
         room.seatCount = colSeatCount * rowSeatCount;
-      }
+        console.log('room.seatCount: ', room.seatCount);
+      },
+      
     },
     sequelize,
     modelName: 'Room',

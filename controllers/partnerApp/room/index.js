@@ -1,12 +1,12 @@
-const { Op } = require('sequelize');
+const { Op, Model, json } = require('sequelize');
 const { Room } = require(__base + '/models');
 
 const room = {};
 
 room.getRoomList = async (req, res) => {
-    const { partnerId } = req.query;
-
     try{
+        const { partnerId } = req.query;
+
         const rooms = await Room.findAll({
             where: {
                 partnerId //나중에 세션으로 저장
@@ -24,7 +24,7 @@ room.getRoomList = async (req, res) => {
         return res.status(200)
             .json(rooms);
     } catch(e){
-        console.error('error: ', e);
+        console.error(e.message);
 
         return res.status(500)
             .json({
@@ -36,8 +36,9 @@ room.getRoomList = async (req, res) => {
 
 room.createRoom = async (req, res) => {
 
-    const { number, name, colSeatCount, rowSeatCount, partnerId } = req.body;
     try{
+        const { number, name, colSeatCount, rowSeatCount, partnerId } = req.body;
+
         let room = await Room.findOne({
             where: {
                 partnerId,
@@ -71,7 +72,7 @@ room.createRoom = async (req, res) => {
             });
 
     } catch(e){
-        console.error('error: ', e);
+        console.error(e.message);
 
         return res.status(500)
             .json({
@@ -99,7 +100,7 @@ room.getRoomForm = async (req, res) => {
                 })
         }
 
-        const { id, number, name, colSeatCount, rowSeatCount } = room;
+        const { id, number, name, colSeatCount, rowSeatCount, seatCount } = room;
 
         return res.status(200)
             .json({
@@ -112,7 +113,6 @@ room.getRoomForm = async (req, res) => {
             });
 
     } catch(e){
-        console.log('e: ', e);
         console.error(e.message);
 
         return res.status(500)
@@ -123,7 +123,92 @@ room.getRoomForm = async (req, res) => {
 }
 
 room.modifyRoom = async (req, res) => {
+    try{
+        const {
+            id,
+            number,
+            name,
+            colSeatCount,
+            rowSeatCount,
+            partnerId
+        } = req.body;
 
+        const seatCount = colSeatCount * rowSeatCount;
+
+        const [roomCount] = await Room.update(
+            {
+                number,
+                name,
+                colSeatCount,
+                rowSeatCount,
+                seatCount
+            },
+            {
+                where: {
+                    id,
+                    partnerId
+                },
+            },
+        );
+ 
+
+        if(roomCount === 0){
+            return res.status(404)
+                .json({
+                    errorMessage: 'this room does not exist'
+                });
+        }
+
+        return res.json({
+            id,
+            name,
+            number,
+            colSeatCount,
+            rowSeatCount,
+            seatCount
+        });
+    } catch(e){
+        console.error(e.message);
+
+        return res.status(500)
+            .json({
+                errorMessage: e.message
+            });
+    }
+}
+
+room.deleteRoom = async (req, res) => {
+    try{
+        const { roomId } = req.params;
+        console.log('body: ', req.body);
+        const { partnerId } = req.body;
+
+        const deletedCount = await Room.destroy({
+            where: {
+                id: roomId,
+                partnerId
+            }
+        });
+
+        if(deletedCount === 0){
+            return res.status(404)
+                .json({
+                    errorMessage: 'There is no Room to delete'
+                });
+        }
+
+        return res.status(200)
+            .json({
+                id: roomId
+            });
+    } catch(e){
+        console.error(e.message);
+
+        return res.status(500)
+            .json({
+                errorMessage: e.message
+            });
+    }
 }
 
 module.exports = room;

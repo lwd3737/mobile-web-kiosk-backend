@@ -9,5 +9,7 @@ router.post('/login', authController.login);
 router.get('/rooms', roomController.getRoomList);
 router.post('/rooms', roomController.createRoom);
 router.get('/rooms/:roomId', roomController.getRoomForm);
+router.put('/rooms/:roomId', roomController.modifyRoom);
+router.delete('/rooms/:roomId', roomController.deleteRoom);
 
 module.exports = router;
