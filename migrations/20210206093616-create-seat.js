@@ -29,10 +29,15 @@ module.exports = {
         onUpdate: 'cascade',
         onDelete: 'cascade'
       },
-      purchaseRecordId: {
-        type: Sequelize.INTEGER,
-        unique: true
-      },
+      // useTicketIdInUse: {
+      //   type: Sequelize.INTEGER,
+      //   references: {
+      //     model: 'UseTickets',
+      //     key: 'id'
+      //   },
+      //   onUpdate: 'cascade',
+      //   onDelete: 'set null'
+      // },
       isAvailable: {
         type: Sequelize.BOOLEAN
       },

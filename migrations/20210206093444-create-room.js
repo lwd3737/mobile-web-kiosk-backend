@@ -26,6 +26,14 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      colSeatCount: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      rowSeatCount: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
       seatCount: {
         type: Sequelize.INTEGER,
         allowNull: false

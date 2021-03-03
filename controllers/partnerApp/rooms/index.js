@@ -1,9 +1,9 @@
-const { Op, Model, json } = require('sequelize');
-const { Room } = require(__base + '/models');
+const { Op } = require('sequelize');
+const { Room, Seat } = require(__base + '/models');
 
-const room = {};
+const rooms = {};
 
-room.getRoomList = async (req, res) => {
+rooms.getRoomList = async (req, res) => {
     try{
         const { partnerId } = req.query;
 
@@ -11,7 +11,10 @@ room.getRoomList = async (req, res) => {
             where: {
                 partnerId //나중에 세션으로 저장
             },
-            attributes: ['id', 'number', 'name', 'colSeatCount', 'rowSeatCount' ,'seatCount']
+            attributes: ['id', 'number', 'name', 'colSeatCount', 'rowSeatCount' ,'seatCount'],
+            include: {
+                model: Seat,
+            }
         });
 
         if(rooms.length === 0){
@@ -20,9 +23,24 @@ room.getRoomList = async (req, res) => {
                     errorMessage: 'rooms not exist'
                 });
         }
-    
+ 
+        const roomsData = rooms.map(room => {
+            const data =  {
+                ...room.dataValues,
+                hasSeats: room.hasSeats(),
+                seatCountInUse: room.hasSeats() 
+                    ? room.countSeatInUse()
+                    : 0
+            }
+
+            delete data.Seats;
+            
+            return data;
+        })
+        //console.log('rooms data: ', roomsData);
+
         return res.status(200)
-            .json(rooms);
+            .json(roomsData);
     } catch(e){
         console.error(e.message);
 
@@ -34,12 +52,12 @@ room.getRoomList = async (req, res) => {
 
 }
 
-room.createRoom = async (req, res) => {
+rooms.createRoom = async (req, res) => {
 
     try{
         const { number, name, colSeatCount, rowSeatCount, partnerId } = req.body;
 
-        let room = await Room.findOne({
+        let [room, created] = await Room.findOrCreate({
             where: {
                 partnerId,
                 [Op.or]: [
@@ -47,24 +65,22 @@ room.createRoom = async (req, res) => {
                     { name }
                 ]
             },
-            attributes: ['id', 'number', 'name', 'colSeatCount', 'rowSeatCount', 'seatCount']
+            defaults: {
+                number,
+                name,
+                colSeatCount,
+                rowSeatCount,
+            }
         });
 
-        if(room){
+        if(!created){
             return res.status(400)
                 .json({
                     errorMessage: 'room number or name is already exist'
                 });
         }
 
-        room = await Room.create({
-            number,
-            name,
-            colSeatCount,
-            rowSeatCount,
-        });
-
-        room.setPartner(partnerId);
+        console.log('room: ', room);
         
         return res.status(201)
             .json({
@@ -81,7 +97,7 @@ room.createRoom = async (req, res) => {
     }
 };
 
-room.getRoomForm = async (req, res) => {
+rooms.getRoomForm = async (req, res) => {
     const { roomId } = req.params;
     const { partnerId } = req.query;
 
@@ -122,7 +138,7 @@ room.getRoomForm = async (req, res) => {
     }
 }
 
-room.modifyRoom = async (req, res) => {
+rooms.modifyRoom = async (req, res) => {
     try{
         const {
             id,
@@ -177,10 +193,9 @@ room.modifyRoom = async (req, res) => {
     }
 }
 
-room.deleteRoom = async (req, res) => {
+rooms.deleteRoom = async (req, res) => {
     try{
         const { roomId } = req.params;
-        console.log('body: ', req.body);
         const { partnerId } = req.body;
 
         const deletedCount = await Room.destroy({
@@ -211,4 +226,4 @@ room.deleteRoom = async (req, res) => {
     }
 }
 
-module.exports = room;
+module.exports = rooms;

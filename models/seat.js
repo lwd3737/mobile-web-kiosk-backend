@@ -10,14 +10,21 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Seat.belongsTo(models.PurchaseRecord);
+      Seat.belongsTo(models.UseTicket, {
+        foreignKey: 'useticketIdInUse'
+      });
       Seat.belongsTo(models.Partner);
       Seat.belongsTo(models.Room);
     }
   };
   Seat.init({
-    number: DataTypes.INTEGER,
-    isAvailable: DataTypes.BOOLEAN
+    number: {
+      type: DataTypes.INTEGER,
+    },
+    isAvailable: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
   }, {
     sequelize,
     modelName: 'Seat',

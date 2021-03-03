@@ -10,16 +10,56 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Room.belongsTo(models.Partner);
+      Room.belongsTo(models.Partner, {
+        foreignKey: 'partnerId'
+      });
       Room.hasMany(models.Seat);
     }
+
+    hasSeats(){
+      const seatCount = this.Seats.length;
+      console.log('seat count: ', seatCount);
+      if(seatCount === 0){
+        return false;
+      }
+
+      return true
+    }
+
+    countSeatInUse(){
+      const seats = this.Seats;
+      console.log('seats: ', seats);
+
+      return seats.filter(seat => seat.isAvailable).length;
+    }
+
   };
   Room.init({
-    number: DataTypes.INTEGER,
-    name: DataTypes.STRING,
-    colSeatCount: DataTypes.INTEGER,
-    rowSeatCount: DataTypes.INTEGER, 
-    seatCount: DataTypes.INTEGER
+    number: {
+      type: DataTypes.INTEGER,
+      unique: true
+    },
+    name: {
+      type: DataTypes.STRING,
+    },
+    colSeatCount: {
+      type: DataTypes.INTEGER,
+      validate: {
+        min: 0
+      }
+    },
+    rowSeatCount: {
+      type: DataTypes.INTEGER,
+      validate: {
+        min: 0
+      }
+    }, 
+    seatCount: {
+      type: DataTypes.INTEGER,
+      validate: {
+        min: 0
+      }
+    },
   }, {
     hooks: {
       beforeValidate: (room) => {
@@ -27,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
         room.seatCount = colSeatCount * rowSeatCount;
         console.log('room.seatCount: ', room.seatCount);
       },
-      
+     
     },
     sequelize,
     modelName: 'Room',

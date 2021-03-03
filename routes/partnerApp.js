@@ -2,14 +2,19 @@ const express = require('express');
 const router = express.Router();
 
 const authController = require(__base + '/controllers/partnerApp/auth');
-const roomController = require(__base + '/controllers/partnerApp/room');
+const roomsController = require(__base + '/controllers/partnerApp/rooms');
+const seatsController = require(__base + '/controllers/partnerApp/seats');
+
 
 router.post('/login', authController.login);
 
-router.get('/rooms', roomController.getRoomList);
-router.post('/rooms', roomController.createRoom);
-router.get('/rooms/:roomId', roomController.getRoomForm);
-router.put('/rooms/:roomId', roomController.modifyRoom);
-router.delete('/rooms/:roomId', roomController.deleteRoom);
+router.get('/rooms', roomsController.getRoomList);
+router.post('/rooms', roomsController.createRoom);
+router.get('/rooms/:roomId', roomsController.getRoomForm);
+router.put('/rooms/:roomId', roomsController.modifyRoom);
+router.delete('/rooms/:roomId', roomsController.deleteRoom);
+
+router.get('rooms/:roomId/seats', seatsController.getSeatsForm);
+router.post('rooms/:roomId/seats', seatsController.createSeats);
 
 module.exports = router;

@@ -8,6 +8,15 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      // membershipId: {
+      //   type: Sequelize.INTEGER,
+      //   references: {
+      //     model: 'Membership',
+      //     key: 'id'
+      //   },
+      //   onUpdate: 'cascade',
+      //   onDelete: 'cascade'
+      // },
       name:{
         type: Sequelize.STRING
       },
@@ -29,8 +38,19 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+
+    await queryInterface.addColumn('Seats', 'useTicketIdInUse', {
+      type: Sequelize.INTEGER,
+        references: {
+          model: 'UseTickets',
+          key: 'id'
+        },
+        onUpdate: 'cascade',
+        onDelete: 'set null'
+    })
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('UseTickets');
+    await queryInterface.removeColumn('Seats', 'useTicketIdInUse');
   }
 };

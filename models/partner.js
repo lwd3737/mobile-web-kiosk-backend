@@ -17,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
       Partner.belongsToMany(models.User, {
         through: models.Membership
       });
-      Partner.hasMany(models.UseTicket);
       Partner.hasMany(models.Room);
       Partner.hasMany(models.Seat);
     }
