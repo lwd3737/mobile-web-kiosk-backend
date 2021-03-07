@@ -18,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         through: models.Membership
       });
       Partner.hasMany(models.Room);
-      Partner.hasMany(models.Seat);
     }
   };
   Partner.init({

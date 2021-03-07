@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
       Seat.belongsTo(models.UseTicket, {
         foreignKey: 'useticketIdInUse'
       });
-      Seat.belongsTo(models.Partner);
       Seat.belongsTo(models.Room);
     }
   };

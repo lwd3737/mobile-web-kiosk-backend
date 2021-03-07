@@ -36,20 +36,14 @@ seats.createSeats = async (req, res) => {
     try{
         const { roomId } = req.params;
         const { partnerId, seats } = req.body;
+        console.log('seats: ', seats);
 
         const room  = await Room.findOne({
             where: {
                 partnerId,
-                roomId
+                id: roomId
             }
         });
-
-        if(room.seatCount !== seats.length){
-            return res.status(400)
-                .json({
-                    errorMessage: '생성된 공간의 좌석 개수와 생성된 좌석의 개수가 일치하지 않습니다'
-                });
-        }
 
         if(!room){
             return res.status(404)
@@ -58,8 +52,9 @@ seats.createSeats = async (req, res) => {
                 });
         }
 
-        await room.setSeats(seats);
-        const createdSeats = await room.getSeats();
+
+        const createdSeats = await Seat.bulkCreate(seats);
+        await room.setSeats(createdSeats);
         console.log('seats: ', createdSeats);
 
         return res.status(201)

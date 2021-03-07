@@ -11,15 +11,6 @@ module.exports = {
       number: {
         type: Sequelize.INTEGER
       },
-      partnerId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Partners',
-          key: 'id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade'
-      },
       roomId: {
         type: Sequelize.INTEGER,
         references: {
