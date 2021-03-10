@@ -25,11 +25,12 @@ rooms.getRoomList = async (req, res) => {
         }
  
         const roomsData = rooms.map(room => {
+            console.log('seats in use:', room.countSeatsInUse());
             const data =  {
                 ...room.dataValues,
                 hasSeats: room.hasSeats(),
                 seatCountInUse: room.hasSeats() 
-                    ? room.countSeatInUse()
+                    ? room.countSeatsInUse()
                     : 0
             }
 

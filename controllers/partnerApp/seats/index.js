@@ -38,6 +38,13 @@ seats.createSeats = async (req, res) => {
         const { partnerId, seats } = req.body;
         console.log('seats: ', seats);
 
+        if(!seats || seats.length === 0){
+            return res.status(400)
+                .json({
+                    errorMessage: '생성된 좌석이 없습니다.'
+                });
+        }
+
         const room  = await Room.findOne({
             where: {
                 partnerId,
@@ -54,8 +61,9 @@ seats.createSeats = async (req, res) => {
 
 
         const createdSeats = await Seat.bulkCreate(seats);
+
         await room.setSeats(createdSeats);
-        console.log('seats: ', createdSeats);
+        await Seat.updateRoomSeatCount(room, createdSeats);
 
         return res.status(201)
             .json(createdSeats);

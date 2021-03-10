@@ -26,11 +26,9 @@ module.exports = (sequelize, DataTypes) => {
       return true
     }
 
-    countSeatInUse(){
+    countSeatsInUse(){
       const seats = this.Seats;
-      console.log('seats: ', seats);
-
-      return seats.filter(seat => seat.isAvailable).length;
+      return seats.filter(seat => !seat.isAvailable).length;
     }
 
   };
@@ -56,19 +54,12 @@ module.exports = (sequelize, DataTypes) => {
     }, 
     seatCount: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
       validate: {
         min: 0
       }
     },
   }, {
-    hooks: {
-      beforeValidate: (room) => {
-        const { colSeatCount, rowSeatCount } = room;
-        room.seatCount = colSeatCount * rowSeatCount;
-        console.log('room.seatCount: ', room.seatCount);
-      },
-     
-    },
     sequelize,
     modelName: 'Room',
   });

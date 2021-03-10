@@ -15,6 +15,14 @@ module.exports = (sequelize, DataTypes) => {
       });
       Seat.belongsTo(models.Room);
     }
+
+    static async updateRoomSeatCount(room, seats){
+      const seatCount = seats ? seats.length : await room.countSeats();
+
+      room.update({
+        seatCount
+      });
+    }
   };
   Seat.init({
     number: {
