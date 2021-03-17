@@ -20,17 +20,18 @@ module.exports = {
         onUpdate: 'cascade',
         onDelete: 'cascade'
       },
-      // useTicketIdInUse: {
-      //   type: Sequelize.INTEGER,
-      //   references: {
-      //     model: 'UseTickets',
-      //     key: 'id'
-      //   },
-      //   onUpdate: 'cascade',
-      //   onDelete: 'set null'
-      // },
+      x: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      y: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
       isAvailable: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

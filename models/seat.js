@@ -13,7 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       Seat.belongsTo(models.UseTicket, {
         foreignKey: 'useticketIdInUse'
       });
-      Seat.belongsTo(models.Room);
+      Seat.belongsTo(models.Room, {
+        foreignKey: 'roomId'
+      });
     }
 
     static async updateRoomSeatCount(room, seats){
@@ -23,16 +25,35 @@ module.exports = (sequelize, DataTypes) => {
         seatCount
       });
     }
+
+    isAvailable(){
+      if(this.useticketIdInUse){
+        return true;
+      }
+
+      return false;
+    }
   };
   Seat.init({
     number: {
       type: DataTypes.INTEGER,
     },
+    x: {
+      type: DataTypes.INTEGER,
+    },
+    y: {
+      type: DataTypes.INTEGER,
+    },
     isAvailable: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
-    },
+    }
   }, {
+    hooks: {
+      afterSave: (seat) => {
+        seat.isAvailable = seat.useticketIdInUse ? true : false;
+      }
+    },
     sequelize,
     modelName: 'Seat',
   });

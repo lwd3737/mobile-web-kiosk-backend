@@ -24,8 +24,6 @@ module.exports = (sequelize, DataTypes) => {
     serviceCategory: DataTypes.STRING,
     serviceName: DataTypes.STRING,
     location: DataTypes.STRING,
-    totalRoomCount: DataTypes.INTEGER,
-    totalSeatCount: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Partner',

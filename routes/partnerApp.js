@@ -14,7 +14,8 @@ router.get('/rooms/:roomId', roomsController.getRoomForm);
 router.put('/rooms/:roomId', roomsController.modifyRoom);
 router.delete('/rooms/:roomId', roomsController.deleteRoom);
 
-router.get('/rooms/:roomId/seats', seatsController.getSeatsForm);
+router.get('/rooms/:roomId/seats', seatsController.getSeats);
 router.post('/rooms/:roomId/seats', seatsController.createSeats);
+router.put('/rooms/:roomId/seats', seatsController.modifySeats);
 
 module.exports = router;

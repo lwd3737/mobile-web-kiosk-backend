@@ -26,12 +26,6 @@ module.exports = {
       location: {
         type: Sequelize.STRING
       },
-      totalRoomCount: {
-        type: Sequelize.INTEGER
-      },
-      totalSeatCount: {
-        type: Sequelize.INTEGER
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
