@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Membership extends Model {
     /**
@@ -13,25 +11,28 @@ module.exports = (sequelize, DataTypes) => {
       Membership.hasMany(models.PurchaseRecord);
       Membership.hasMany(models.UseTicket);
     }
-  };
-  Membership.init({
-    partnerId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'Partner',
-        key: 'id'
-      }
+  }
+  Membership.init(
+    {
+      partnerId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "Partner",
+          key: "id",
+        },
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "User",
+          key: "id",
+        },
+      },
     },
-    userId:  {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'User',
-        key: 'id'
-      }
+    {
+      sequelize,
+      modelName: "Membership",
     }
-  }, {
-    sequelize,
-    modelName: 'Membership',
-  });
+  );
   return Membership;
 };

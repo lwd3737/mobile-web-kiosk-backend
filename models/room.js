@@ -28,7 +28,9 @@ module.exports = (sequelize, DataTypes) => {
 
     countSeatsInUse(){
       const seats = this.Seats;
-      return seats.filter(seat => !seat.isAvailable).length;
+      const count = seats.filter(seat => !seat.isAvailable).length;
+      
+      return count;
     }
 
   };
