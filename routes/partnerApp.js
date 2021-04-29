@@ -19,14 +19,29 @@ router.get("/rooms/:roomId/seats", seatsController.getSeats);
 router.post("/rooms/:roomId/seats", seatsController.createSeats);
 router.put("/rooms/:roomId/seats", seatsController.modifySeats);
 
-router.get("/usetickets", useticketsController.getUseTicketDefinitions);
-router.post("/usetickets", useticketsController.createUseTicketDefinition);
+//router.get("/usetickets/category", useticketsController.getUseTicketCategory);
+router.post(
+  "/usetickets/category",
+  useticketsController.createUseTicketCatetory
+);
+//router.delete(
+//  "/usetickets/category",
+//  useticketsController.deleteUseTicketCategory
+//);
+router.get(
+  "/usetickets/definition",
+  useticketsController.getUseTicketDefinitions
+);
+router.post(
+  "/usetickets/definition",
+  useticketsController.createUseTicketDefinition
+);
 router.put(
-  "/usetickets/:useticketId",
+  "/usetickets/definition/:useticketId",
   useticketsController.modifyUseTicketDefinition
 );
 router.delete(
-  "/usetickets/:useticketId",
+  "/usetickets/definition/:useticketId",
   useticketsController.deleteUseTicketDefinition
 );
 

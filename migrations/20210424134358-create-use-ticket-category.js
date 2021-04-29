@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("UseTicketDefinitions", {
+    await queryInterface.createTable("UseTicketCategories", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,18 +15,9 @@ module.exports = {
           key: "id",
         },
         onDelete: "cascade",
-        onUpdate: "cascade",
+        onUpdaet: "cascade",
       },
       name: {
-        type: Sequelize.STRING,
-      },
-      price: {
-        type: Sequelize.INTEGER,
-      },
-      period: {
-        type: Sequelize.INTEGER,
-      },
-      periodUnit: {
         type: Sequelize.STRING,
       },
       createdAt: {
@@ -39,18 +30,25 @@ module.exports = {
       },
     });
 
-    await queryInterface.addColumn("UseTickets", "useticketDefinitionId", {
-      type: Sequelize.INTEGER,
-      references: {
-        model: "UseTicketDefinitions",
-        key: "id",
-      },
-      onUpdate: "set null",
-      onDelete: "set null",
-    });
+    await queryInterface.addColumn(
+      "UseTicketDefinitions",
+      "useticketCategoryId",
+      {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "UseTicketCategories",
+          key: "id",
+        },
+        onDelete: "set null",
+        onUpdate: "cascade",
+      }
+    );
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn("UseTickets", "useticketDefinitionId");
-    await queryInterface.dropTable("UseTicketDefinitions");
+    await queryInterface.removeColumn(
+      "UseTicketDefinitions",
+      "useticketCategoryId"
+    );
+    await queryInterface.dropTable("UseTicketCategories");
   },
 };
