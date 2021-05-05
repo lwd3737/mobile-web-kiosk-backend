@@ -32,7 +32,7 @@ router.post(
   useticketsController.createUseTicketCatetory
 );
 router.delete(
-  "/usetickets/categories/:categoryId",
+  "/usetickets/categories",
   useticketsController.deleteUseTicketCategory
 );
 router.get(
@@ -48,7 +48,7 @@ router.put(
   useticketsController.modifyUseTicketDefinition
 );
 router.delete(
-  "/usetickets/definition/:useticketId",
+  "/usetickets/definition",
   useticketsController.deleteUseTicketDefinition
 );
 

@@ -58,12 +58,11 @@ usetickets.createUseTicketCatetory = async (req, res) => {
 
 usetickets.deleteUseTicketCategory = async (req, res) => {
   try {
-    const { partnerId } = req.body;
-    const { categoryId } = req.params;
+    const { partnerId, id } = req.body;
 
     const deletedCount = await UseTicketCategory.destroy({
       where: {
-        id: categoryId,
+        id,
         partnerId,
       },
     });
@@ -74,7 +73,7 @@ usetickets.deleteUseTicketCategory = async (req, res) => {
         .json({ errorMessage: "해당 이용권 종류가 존재하지 않습니다." });
     }
 
-    return res.status(204).json({ isDeleted: true });
+    return res.status(200).json({ id });
   } catch (e) {
     console.error(e.message);
     return res.status(500).json({ errorMessage: e.message });
