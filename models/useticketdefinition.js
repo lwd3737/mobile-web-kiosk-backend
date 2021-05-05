@@ -5,13 +5,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       UseTicketDefinition.belongsTo(models.Partner);
       UseTicketDefinition.hasMany(models.UseTicket);
+      UseTicketDefinition.belongsTo(models.UseTicketCategory);
     }
   }
   UseTicketDefinition.init(
     {
-      name: {
-        type: DataTypes.STRING,
-      },
       price: {
         type: DataTypes.INTEGER.UNSIGNED,
       },

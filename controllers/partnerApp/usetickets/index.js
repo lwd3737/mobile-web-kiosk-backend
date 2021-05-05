@@ -1,3 +1,5 @@
+const useticketcategory = require("../../../models/useticketcategory");
+
 const {
   UseTicketCategory,
   UseTicketDefinition,
@@ -7,7 +9,23 @@ const {
 
 const usetickets = {};
 
-//usetickets.getUseTicketCategories = async (req, res) => {};
+usetickets.getUseTicketCategories = async (req, res) => {
+  try {
+    const { partnerId } = req.query;
+    const useticketCategories = await UseTicketCategory.findAll({
+      where: {
+        partnerId,
+      },
+      attributes: ["id", "name"],
+    });
+
+    return res.status(200).json(useticketCategories);
+  } catch (e) {
+    console.error(e.message);
+
+    return res.status(500).json({ errorMessage: e.message });
+  }
+};
 
 usetickets.createUseTicketCatetory = async (req, res) => {
   try {
@@ -26,7 +44,9 @@ usetickets.createUseTicketCatetory = async (req, res) => {
       name,
     });
 
-    console.log("useticket category: ", useticketCategory);
+    useticketCategory.setPartner(partnerId);
+
+    //console.log("useticket category: ", useticketCategory);
 
     return res.status(201).json({ ...useticketCategory.dataValues });
   } catch (e) {
@@ -36,7 +56,30 @@ usetickets.createUseTicketCatetory = async (req, res) => {
   }
 };
 
-//usetickets.deleteUseTicketCategory = async (req, res) => {};
+usetickets.deleteUseTicketCategory = async (req, res) => {
+  try {
+    const { partnerId } = req.body;
+    const { categoryId } = req.params;
+
+    const deletedCount = await UseTicketCategory.destroy({
+      where: {
+        id: categoryId,
+        partnerId,
+      },
+    });
+
+    if (deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ errorMessage: "해당 이용권 종류가 존재하지 않습니다." });
+    }
+
+    return res.status(204).json({ isDeleted: true });
+  } catch (e) {
+    console.error(e.message);
+    return res.status(500).json({ errorMessage: e.message });
+  }
+};
 
 usetickets.getUseTicketDefinitions = async (req, res) => {
   try {
@@ -55,7 +98,7 @@ usetickets.getUseTicketDefinitions = async (req, res) => {
         .json({ errorMessage: "등록된 이용권이 존재하지 않습니다." });
     }
 
-    console.log("useticket: ", useticketDefinitions);
+    //console.log("useticket: ", useticketDefinitions);
     return res
       .status(200)
       .json({ useticketDefinitions: useticketDefinitions.dataValues });
@@ -69,7 +112,7 @@ usetickets.getUseTicketDefinitions = async (req, res) => {
 usetickets.createUseTicketDefinition = async (req, res) => {
   try {
     const { partnerId, inputs } = req.body;
-    const { useticketCategoryId, name, periodUnit, period, price } = inputs;
+    const { categoryId, periodUnit, period, price } = inputs;
 
     const partner = await Partner.findByPk(partnerId);
 
@@ -79,9 +122,13 @@ usetickets.createUseTicketDefinition = async (req, res) => {
         .json({ errorMessage: "존재하지 않는 계정입니다." });
     }
 
-    const useticketCategory = await UseTicketCategory.findByPk(
-      useticketCategoryId
-    );
+    //최적화 필요 : 1개의 쿼리로 바꾸기(서브 쿼리)
+    const useticketCategory = await UseTicketCategory.findOne({
+      where: {
+        id: categoryId,
+        partnerId,
+      },
+    });
 
     if (!useticketCategory) {
       return res
@@ -101,24 +148,20 @@ usetickets.createUseTicketDefinition = async (req, res) => {
     }
 
     const useticketDefinition = await UseTicketDefinition.create({
-      partnerId,
-      name,
+      partnerId: partner.id,
+      useticketCategoryId: useticketCategory.id,
       periodUnit,
       period,
       price,
     });
 
-    useticketDefinition.setPartner(partner);
-    useticketDefinition.setUseTicketCategory(useticketCategory);
+    await useticketDefinition.setPartner(partner);
+    await useticketDefinition.setUseTicketCategory(useticketCategory);
+
+    const name = await useticketDefinition.getUseTicketCategory().name;
 
     {
-      const {
-        id,
-        name,
-        periodUnit,
-        period,
-        price,
-      } = useticketDefinition.dataValues;
+      const { id, periodUnit, period, price } = useticketDefinition.dataValues;
 
       return res.status(201).json({ id, name, periodUnit, period, price });
     }
