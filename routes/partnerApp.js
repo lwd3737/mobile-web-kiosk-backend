@@ -36,19 +36,19 @@ router.delete(
   useticketsController.deleteUseTicketCategory
 );
 router.get(
-  "/usetickets/definition",
+  "/usetickets/definitions",
   useticketsController.getUseTicketDefinitions
 );
 router.post(
-  "/usetickets/definition",
+  "/usetickets/definitions",
   useticketsController.createUseTicketDefinition
 );
 router.put(
-  "/usetickets/definition/:useticketId",
+  "/usetickets/definitions/:useticketId",
   useticketsController.modifyUseTicketDefinition
 );
 router.delete(
-  "/usetickets/definition",
+  "/usetickets/definitions",
   useticketsController.deleteUseTicketDefinition
 );
 

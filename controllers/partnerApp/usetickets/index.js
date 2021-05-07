@@ -88,7 +88,11 @@ usetickets.getUseTicketDefinitions = async (req, res) => {
       where: {
         partnerId,
       },
-      attributes: ["id", "name", "periodUnit", "period", "price"],
+      attributes: ["id", "periodUnit", "period", "price"],
+      include: {
+        model: UseTicketCategory,
+        attributes: ["name"],
+      },
     });
 
     if (!useticketDefinitions || useticketDefinitions.length === 0) {
@@ -98,9 +102,13 @@ usetickets.getUseTicketDefinitions = async (req, res) => {
     }
 
     //console.log("useticket: ", useticketDefinitions);
-    return res
-      .status(200)
-      .json({ useticketDefinitions: useticketDefinitions.dataValues });
+    const data = [];
+    for (let useticketDefinition of useticketDefinitions) {
+      const _data = await useticketDefinition.getApiData();
+      data.push(_data);
+    }
+
+    return res.status(200).json(data);
   } catch (e) {
     console.error(e.message);
 

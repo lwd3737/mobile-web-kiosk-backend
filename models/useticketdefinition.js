@@ -5,7 +5,25 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       UseTicketDefinition.belongsTo(models.Partner);
       UseTicketDefinition.hasMany(models.UseTicket);
-      UseTicketDefinition.belongsTo(models.UseTicketCategory);
+      UseTicketDefinition.belongsTo(models.UseTicketCategory, {
+        foreignKey: {
+          name: "useticketCategoryId",
+        },
+      });
+    }
+
+    async getApiData() {
+      const { id, periodUnit, period, price } = this.dataValues;
+      const { name } = (this.UseTicketCategory &&
+        this.UseTicketCategory.dataValues) || { name: null };
+
+      return {
+        id,
+        periodUnit,
+        period,
+        price,
+        name,
+      };
     }
   }
   UseTicketDefinition.init(
