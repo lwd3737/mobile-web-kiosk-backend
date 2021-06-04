@@ -2,6 +2,13 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class UseTicketDefinition extends Model {
+    static periodUnits = [
+      ["H", "시간"],
+      ["D", "일"],
+      ["W", "주"],
+      ["M", "개월"],
+    ];
+
     static associate(models) {
       UseTicketDefinition.belongsTo(models.Partner);
       UseTicketDefinition.hasMany(models.UseTicket);
@@ -12,6 +19,27 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    static getPeriodUnitLabel(value) {
+      const finded = this.periodUnits.find(
+        (periodUnit) => periodUnit[0] === value
+      );
+      return finded[1];
+    }
+
+    static getPeriodUnitValue(label) {
+      const finded = this.periodUnits.find(
+        (periodUnit) => periodUnit[1] === label
+      );
+      return finded[0];
+    }
+
+    static checkPeriodUnit(value) {
+      const finded = this.periodUnits.find(
+        (periodUnit) => periodUnit[0] === value
+      );
+      return finded ? true : false;
+    }
+
     async getApiData() {
       const { id, periodUnit, period, price } = this.dataValues;
       const { name } = (this.UseTicketCategory &&
@@ -19,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
 
       return {
         id,
-        periodUnit,
+        periodUnit: UseTicketDefinition.getPeriodUnitLabel(periodUnit),
         period,
         price,
         name,

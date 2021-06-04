@@ -1,5 +1,3 @@
-const useticketcategory = require("../../../models/useticketcategory");
-
 const {
   UseTicketCategory,
   UseTicketDefinition,
@@ -58,11 +56,12 @@ usetickets.createUseTicketCatetory = async (req, res) => {
 
 usetickets.deleteUseTicketCategory = async (req, res) => {
   try {
-    const { partnerId, id } = req.body;
+    const { partnerId } = req.body;
+    const { categoryId } = req.params;
 
     const deletedCount = await UseTicketCategory.destroy({
       where: {
-        id,
+        categoryId,
         partnerId,
       },
     });
@@ -73,7 +72,7 @@ usetickets.deleteUseTicketCategory = async (req, res) => {
         .json({ errorMessage: "해당 이용권 종류가 존재하지 않습니다." });
     }
 
-    return res.status(200).json({ id });
+    return res.status(200).json({ categoryId });
   } catch (e) {
     console.error(e.message);
     return res.status(500).json({ errorMessage: e.message });
@@ -143,12 +142,7 @@ usetickets.createUseTicketDefinition = async (req, res) => {
         .json({ errorMessage: "해당 이용권 카테고리가 존재하지 않습니다." });
     }
 
-    if (
-      periodUnit !== "H" &&
-      periodUnit !== "D" &&
-      periodUnit !== "W" &&
-      periodUnit !== "M"
-    ) {
+    if (!UseTicketDefinition.checkPeriodUnit(periodUnit)) {
       return res
         .status(400)
         .json({ errorMessage: "이용시간 단위가 잘못 입력되었습니다." });
@@ -178,9 +172,51 @@ usetickets.createUseTicketDefinition = async (req, res) => {
     return res.status(500).json({ errorMessage: e.message });
   }
 };
+usetickets.modifyUseTicketDefinition = async (req, res) => {
+  try {
+    const { definitionId } = req.params;
+    const { partnerId, inputs } = req.body;
 
-usetickets.deleteUseTicketDefinition = async (req, res) => {};
+    if (inputs && inputs.categoryId) {
+      const { categoryId } = inputs;
+      const useticketCategory = await UseTicketCategory.findByPk(categoryId);
 
-usetickets.modifyUseTicketDefinition = async (req, res) => {};
+      if (!useticketCategory) {
+        return res.status(400).json({ errorMessage: "잘못된 요청입니다." });
+      }
+
+      delete inputs.categoryId;
+    }
+
+    const [count] = await UseTicketDefinition.update(inputs, {
+      where: {
+        partnerId,
+        id: definitionId,
+      },
+      fields: ["name", "price", "period", "periodUnit"],
+    });
+
+    if (count === 0) {
+      return res
+        .status(404)
+        .json({ errorMessage: "등록된 이용권 종류가 없습니다." });
+    }
+
+    console.log("count: ", count);
+
+    await useticketCategory.addUseTicketDefinition();
+
+    return res.status(200).json({ isUpdated: true });
+  } catch (e) {
+    console.error(e.message);
+
+    return res.status(500).json({ errorMessage: e.message });
+  }
+};
+
+usetickets.deleteUseTicketDefinition = async (req, res) => {
+  try {
+  } catch (e) {}
+};
 
 module.exports = usetickets;
